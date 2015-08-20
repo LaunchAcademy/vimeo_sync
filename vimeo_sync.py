@@ -1,5 +1,4 @@
 import os
-import pdb
 import sys
 import vimeo
 
@@ -17,6 +16,14 @@ class VimeoSync:
         self.token = os.environ.get("VIMEO_FULL_ACCESS_TOKEN")
         self.key = os.environ.get("VIMEO_CLIENT_ID")
         self.secret = os.environ.get("VIMEO_CLIENT_SECRET")
+        self.video_password = os.environ.get("VIDEO_PASSWORD")
+
+    def patch_data(self):
+        data = { "name": self.title }
+        if self.video_password:
+            data["privacy.view"] = "password"
+            data["password"] = self.video_password
+        return data
 
     def upload(self):
         v = vimeo.VimeoClient(
@@ -25,8 +32,9 @@ class VimeoSync:
             secret = self.secret
         )
         video_path = v.upload(self.filename)
-        response = v.patch(video_path, data = { 'name': self.title })
+        response = v.patch(video_path, self.patch_data())
         return response.ok
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
