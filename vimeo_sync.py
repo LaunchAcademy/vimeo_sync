@@ -1,4 +1,3 @@
-import pdb
 import os
 import sys
 import vimeo
@@ -33,8 +32,7 @@ class VimeoSync:
             secret = self.secret
         )
         video_path = v.upload(self.filename)
-        pdb.set_trace()
-        response = v.patch(video_path, self.patch_data())
+        response = v.patch(video_path, data = self.patch_data())
         return response.ok
 
 
